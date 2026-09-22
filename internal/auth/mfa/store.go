@@ -129,7 +129,12 @@ func verifyAt(code, secret string, timestamp time.Time) bool {
 }
 
 func (store *Store) VerifyAndConsume(ctx context.Context, userID int64, code, secret string) (bool, error) {
-	return verifyAt(code, secret, store.now()), nil
+	currentTime := store.now()
+
+	if !verifyAt(code, secret, currentTime) {
+		return false, nil
+	}
+
 }
 
 func (store *Store) ConfirmEnrollment(ctx context.Context, userID int64) ([]string, error) {
